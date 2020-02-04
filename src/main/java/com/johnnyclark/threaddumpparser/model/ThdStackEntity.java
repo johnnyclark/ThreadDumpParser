@@ -20,12 +20,24 @@ import java.util.Set;
  */
 
 @Entity
-@Table(name = "ThdStack")
+@Table(name = "Stack")
 public class ThdStackEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @ManyToOne
+  @JoinColumn(name = "thread_dump_id")
+  private TdEntity tdEntity;
+
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "stack_id")
+  private Set<ThdStackFrameEntity> thdStackFrameEntities;
+
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "stack_id")
+  private Set<ThdStackLockLineEntity> thdStackLockLineEntities;
 
   @Column(name = "name")
   private String name;
@@ -54,23 +66,15 @@ public class ThdStackEntity {
   @Column(name = "lastKnownJavaStackPointer")
   private String lastKnownJavaStackPointer;
 
+  @Column(name = "threadState")
+  private String threadState;
+
   @Column(name = "threadStateOptionalInfo")
   private String threadStateOptionalInfo;
 
   @Column(name = "lockedOwnableSynchronizerLines")
   private String lockedOwnableSynchronizerLines;
 
-  @ManyToOne
-  @JoinColumn(name = "td_id")
-  private TdEntity tdEntity;
-
-  @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn(name = "thd_stack_id")
-  private Set<ThdStackFrameEntity> thdStackFrameEntities;
-
-  @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn(name = "thd_stack_id")
-  private Set<ThdStackLockLineEntity> thdStackLockLineEntities;
 
   public static ThdStackEntity fromThdStack(ThdStack thdStack, TdEntity tdEntity) {
     ThdStackEntity thdStackEntity = new ThdStackEntity();
@@ -82,6 +86,7 @@ public class ThdStackEntity {
     thdStackEntity.setOsThreadPriority(thdStack.getOsThreadPriority());
     thdStackEntity.setAddress(thdStack.getAddress());
     thdStackEntity.setOsThreadId(thdStack.getOsThreadId());
+    thdStackEntity.setThreadState(thdStack.getThreadState().toString());
     thdStackEntity.setThreadStatus(thdStack.getThreadStatus());
     thdStackEntity.setLastKnownJavaStackPointer(thdStack.getLastKnownJavaStackPointer());
     thdStackEntity.setThreadStateOptionalInfo(thdStack.getThreadStateOptionalInfo());
@@ -169,6 +174,14 @@ public class ThdStackEntity {
 
   public void setLastKnownJavaStackPointer(String lastKnownJavaStackPointer) {
     this.lastKnownJavaStackPointer = lastKnownJavaStackPointer;
+  }
+
+  public String getThreadState() {
+    return threadState;
+  }
+
+  public void setThreadState(String threadState) {
+    this.threadState = threadState;
   }
 
   public String getThreadStateOptionalInfo() {

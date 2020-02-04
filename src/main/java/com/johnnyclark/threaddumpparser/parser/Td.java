@@ -14,11 +14,13 @@ import java.util.Set;
  * Creation Date: 11/27/2019
  */
 public class Td {
+  private final @NotNull String fileName;
   private final @NotNull TdHeader tdHeader;
   private final @NotNull List<ThdStack> thdStacks;
   private final @NotNull TdTrailer tdTrailer;
 
-  public Td(TdHeader tdHeader, List<ThdStack> thdStacks, TdTrailer tdTrailer) {
+  public Td(String fileName, TdHeader tdHeader, List<ThdStack> thdStacks, TdTrailer tdTrailer) {
+    this.fileName = fileName;
     this.tdHeader = tdHeader;
     this.thdStacks = ImmutableList.copyOf(thdStacks);
     this.tdTrailer = tdTrailer;
@@ -34,6 +36,10 @@ public class Td {
 
   public TdTrailer getTdTrailer() {
     return tdTrailer;
+  }
+
+  public String getFileName() {
+    return fileName;
   }
 
   public Set<ThdStackEntity> getThdStackEntities(TdEntity tdEntity) {

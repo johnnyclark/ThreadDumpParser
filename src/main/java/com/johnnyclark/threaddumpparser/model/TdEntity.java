@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -20,20 +21,28 @@ import java.util.Set;
  */
 
 @Entity
-@Table(name="TD")
+@Table(name = "ThreadDump")
 public class TdEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name="header_line")
-  private String headerLine;
-
   @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn(name = "td_id")
+  @JoinColumn(name = "thread_dump_id")
   private Set<ThdStackEntity> thdStacks;
 
+  @Column(name = "file_name")
+  private String fileName;
+
+  @Column(name = "header_line")
+  private String headerLine;
+
+  @Column(name = "dumpdatetime")
+  private Date dumpDateTime;
+
+  @Column(name = "trailer_line")
+  private String trailerLine;
 
 
   public String getHeaderLine() {
@@ -43,9 +52,6 @@ public class TdEntity {
   public void setHeaderLine(String headerLine) {
     this.headerLine = headerLine;
   }
-
-  @Column(name="trailer_line")
-  private String trailerLine;
 
   public String getTrailerLine() {
     return trailerLine;
@@ -63,9 +69,27 @@ public class TdEntity {
     this.thdStacks = thdStacks;
   }
 
+  public String getFileName() {
+    return fileName;
+  }
+
+  public void setFileName(String fileName) {
+    this.fileName = fileName;
+  }
+
+  public Date getDumpDateTime() {
+    return dumpDateTime;
+  }
+
+  public void setDumpDateTime(Date dumpDateTime) {
+    this.dumpDateTime = dumpDateTime;
+  }
+
   public static TdEntity fromTd(Td td) {
     TdEntity tdEntity = new TdEntity();
+    tdEntity.setFileName(td.getFileName());
     tdEntity.setHeaderLine(td.getTdHeader().getFullContent());
+    tdEntity.setDumpDateTime(td.getTdHeader().getDate());
     tdEntity.setTrailerLine(td.getTdTrailer().getFullContent());
     tdEntity.setThdStacks(Sets.newHashSet(td.getThdStackEntities(tdEntity)));
     return tdEntity;

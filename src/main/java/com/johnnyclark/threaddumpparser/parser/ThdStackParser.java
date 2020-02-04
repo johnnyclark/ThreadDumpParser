@@ -56,7 +56,7 @@ class ThdStackParser {
 
   private List<ThdStackFrame> parseThdStackFrames(List<String> frameAndLockLines) {
     final List<ThdStackFrame> thdStackFrames = new ArrayList<>();
-    int stackFramePosition = 1;
+    Long stackFramePosition = 1L;
     for (String frameAndLockLine : frameAndLockLines) {
       final ThdStackRegExFrameLines thdStackRegExFrameLines = new ThdStackRegExFrameLines(frameAndLockLine);
       if (thdStackRegExFrameLines.isMatch)
@@ -68,7 +68,7 @@ class ThdStackParser {
 
   private List<ThdStackLockLine> parseThdStackLockLines(List<String> frameAndLockLines) {
     final List<ThdStackLockLine> thdStackLockLines = new ArrayList<>();
-    int stackFramePosition = 1;
+    Long stackFramePosition = 1L;
     for (String frameAndLockLine : frameAndLockLines) {
       ThdStackRegExLockLine thdStackRegExLockLine = new ThdStackRegExLockLine(frameAndLockLine);
       if (thdStackRegExLockLine.isMatch)
@@ -146,7 +146,6 @@ class ThdStackParser {
         }
       }
     }
-
   }
 
   public static class ThdStackRegExStateLine {
@@ -226,30 +225,39 @@ class ThdStackParser {
       pkgName = StringUtils.substringBeforeLast(pkgClass, ".");
     }
 
-    ThdStackFrame buildThdStackFrame(int stackFramePosition) {
+    ThdStackFrame buildThdStackFrame(Long stackFramePosition) {
       return new ThdStackFrame(pkgName, className, innerClassName, methodName, fileName, lineNumber, stackFramePosition);
     }
   }
 
 
   public static class ThdStackRegExLockLine {
-    private static final Pattern PATTERN = Pattern.compile("\\s*-(.*)\\s*");
+    private static final Pattern PATTERN = Pattern.compile("\\s*-([A-Za-z ]+)\\s*<([A-Za-z0-9]+)>\\s*\\(([A-Za-z0-9.$ ]+)\\)");
     private final boolean isMatch;
 
     private final @NotNull String content;
+    private final @NotNull String status;
+    private final @NotNull String lockId;
+    private final @NotNull String pkgAndClassName;
 
     ThdStackRegExLockLine(final @NotNull String line) {
       Matcher matcher = PATTERN.matcher(line);
       isMatch = matcher.find();
       if (isMatch) {
-        content = matcher.group(1);
+        content = matcher.group(0);
+        status = matcher.group(1);
+        lockId = matcher.group(2);
+        pkgAndClassName = matcher.group(3);
       } else {
         content = "";
+        status = "";
+        lockId = "";
+        pkgAndClassName = "";
       }
     }
 
-    ThdStackLockLine buildThdStackLockLine(int stackFramePosition) {
-      return new ThdStackLockLine(content, stackFramePosition);
+    ThdStackLockLine buildThdStackLockLine(Long stackFramePosition) {
+      return new ThdStackLockLine(status, lockId, pkgAndClassName, content, stackFramePosition);
     }
   }
 

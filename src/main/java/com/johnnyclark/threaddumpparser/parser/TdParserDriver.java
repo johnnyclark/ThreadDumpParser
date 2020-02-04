@@ -32,7 +32,7 @@ public class TdParserDriver {
       logger.info("Processing File " + fullFileName);
       String contents = new String(Files.readAllBytes(Paths.get(fullFileName)));
       TdParser tdParser = new TdParser();
-      Td td = tdParser.parse(contents);
+      Td td = tdParser.parse(fileName, contents);
       TdEntity tdEntity = TdEntity.fromTd(td);
 
       tdRepository.save(tdEntity);

@@ -17,17 +17,18 @@ import java.util.Scanner;
 public class TdParser {
   private static final Logger logger = LoggerFactory.getLogger(TdParser.class);
 
-  public Td parse(@NotNull String fullThreadDumpContent) {
+  public Td parse(@NotNull String fileName, @NotNull String fullThreadDumpContent) {
     List<String> paragraphs = getParagraphs(fullThreadDumpContent);
     TdHeader tdHeader = processTdHeader(paragraphs);
+    removeHeaderParagraph(paragraphs, tdHeader);
     TdTrailer tdTrailer = null;
 
     TdTrailerParser tdTrailerParser = new TdTrailerParser();
     ThdStackParser thdStackParser = new ThdStackParser();
     List<ThdStack> thdStacks = new ArrayList<>();
     int numParagraphs = paragraphs.size();
-    if (numParagraphs > 1) {
-      for (ListIterator<String> paragraphIter = paragraphs.listIterator(1); paragraphIter.hasNext(); ) {
+    if (numParagraphs > 0) {
+      for (ListIterator<String> paragraphIter = paragraphs.listIterator(0); paragraphIter.hasNext(); ) {
         String paragraph = paragraphIter.next();
 
         if (StringUtils.isEmpty(paragraph)) {
@@ -40,13 +41,24 @@ public class TdParser {
           break;
         }
         ThdStack thdStack = processStackParagraph(thdStackParser, paragraph, paragraphIter);
-        if(StringUtils.isBlank(thdStack.getName()))
-          System.out.printf("");
+//        if(StringUtils.isBlank(thdStack.getName()))
+//          System.out.printf("");
         thdStacks.add(thdStack);
       }
     }
 
-    return new Td(tdHeader, thdStacks, tdTrailer);
+    if (tdTrailer == null) {
+      tdTrailer = new TdTrailer("");  // If the thread dump was produced via Intellij debugger (or some other means) then it might not have the correct header/trailer
+    }
+
+    return new Td(fileName, tdHeader, thdStacks, tdTrailer);
+  }
+
+  private void removeHeaderParagraph(List<String> paragraphs, TdHeader tdHeader) {
+    if (tdHeader.getFullContent().isEmpty())
+      return;
+    ;  // If the thread dump was produced via Intellij debugger (or some other means) then it might not have the correct header/trailer
+    paragraphs.remove(0);
   }
 
   private ThdStack processStackParagraph(ThdStackParser thdStackParser, String paragraph, ListIterator<String> paragraphIter) {

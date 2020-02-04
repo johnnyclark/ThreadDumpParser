@@ -116,21 +116,21 @@ public class ThdStack {
       thdStackFrameEntity.setInnerClassName(thdStackFrame.getInnerClassName());
       thdStackFrameEntity.setMethodName(thdStackFrame.getMethodName());
       thdStackFrameEntity.setLineNumber(thdStackFrame.getLineNumber());
+      thdStackFrameEntity.setStackFramePosition(thdStackFrame.getStackFramePosition());
       entities.add(thdStackFrameEntity);
     }
     return entities;
   }
+
   public Set<ThdStackLockLineEntity> getThdStackLockLineEntities() {
     Set<ThdStackLockLineEntity> entities = Sets.newHashSet();
     for (ThdStackLockLine thdStackLockLine : thdStackLockLines) {
       ThdStackLockLineEntity thdStackLockLineEntity = new ThdStackLockLineEntity();
       thdStackLockLineEntity.setContent(thdStackLockLine.getContent());
-//      thdStackLockLineEntity.setFileName(thdStackLockLine.getFileName());
-//      thdStackLockLineEntity.setClassName(thdStackLockLine.getClassName());
-//      thdStackLockLineEntity.setInnerClassName(thdStackLockLine.getInnerClassName());
-//      thdStackLockLineEntity.setMethodName(thdStackLockLine.getMethodName());
-//      thdStackLockLineEntity.setLineNumber(thdStackLockLine.getLineNumber());
-//      thdStackLockLineEntity.set(thdStackLockLine.get());
+      thdStackLockLineEntity.setStatus(thdStackLockLine.getStatus());
+      thdStackLockLineEntity.setLockId(thdStackLockLine.getLockId());
+      thdStackLockLineEntity.setPkgAndClassName(thdStackLockLine.getPkgAndClassName());
+      thdStackLockLineEntity.setStackFramePosition(thdStackLockLine.getStackFramePosition());
       entities.add(thdStackLockLineEntity);
     }
     return entities;

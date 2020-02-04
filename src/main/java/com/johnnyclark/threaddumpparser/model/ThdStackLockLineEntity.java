@@ -15,19 +15,31 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table(name = "ThdStackLockLine")
+@Table(name = "StackLockLine")
 public class ThdStackLockLineEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @ManyToOne
+  @JoinColumn(name = "stack_id")
+  private ThdStackEntity thdStackEntity;
+
   @Column(name = "content")
   private String content;
 
-  @ManyToOne
-  @JoinColumn(name = "thd_stack_id")
-  private ThdStackEntity thdStackEntity;
+  @Column(name = "status")
+  private String status;
+
+  @Column(name = "lockId")
+  private String lockId;
+
+  @Column(name = "pkgAndClassName")
+  private String pkgAndClassName;
+
+  @Column(name = "stackFramePosition")
+  private Long stackFramePosition;
 
   public String getContent() {
     return content;
@@ -43,5 +55,37 @@ public class ThdStackLockLineEntity {
 
   public void setThdStackEntity(ThdStackEntity thdStackEntity) {
     this.thdStackEntity = thdStackEntity;
+  }
+
+  public String getStatus() {
+    return status;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
+  public String getLockId() {
+    return lockId;
+  }
+
+  public void setLockId(String lockId) {
+    this.lockId = lockId;
+  }
+
+  public String getPkgAndClassName() {
+    return pkgAndClassName;
+  }
+
+  public void setPkgAndClassName(String pkgAndClassName) {
+    this.pkgAndClassName = pkgAndClassName;
+  }
+
+  public Long getStackFramePosition() {
+    return stackFramePosition;
+  }
+
+  public void setStackFramePosition(Long stackFramePosition) {
+    this.stackFramePosition = stackFramePosition;
   }
 }

@@ -14,9 +14,9 @@ public class ThdStackFrame {
 
   private final @NotNull String fileName;
   private final @NotNull Long lineNumber;
-  private final int stackFramePosition;
+  private final Long stackFramePosition;
 
-  public ThdStackFrame(@NotNull String pkgName, @NotNull String className, @NotNull String innerClassName, @NotNull String methodName, @NotNull String fileName, @NotNull Long lineNumber, int stackFramePosition) {
+  public ThdStackFrame(@NotNull String pkgName, @NotNull String className, @NotNull String innerClassName, @NotNull String methodName, @NotNull String fileName, @NotNull Long lineNumber, Long stackFramePosition) {
     this.pkgName = pkgName;
     this.className = className;
     this.innerClassName = innerClassName;
@@ -50,7 +50,7 @@ public class ThdStackFrame {
     return lineNumber;
   }
 
-  public int getStackFramePosition() {
+  public Long getStackFramePosition() {
     return stackFramePosition;
   }
 
